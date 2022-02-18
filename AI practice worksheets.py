@@ -6,6 +6,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, accuracy_score
+from sklearn.linear_model import LinearRegression
+from sklearn.datasets import make_classification
+from sklearn.model_selection import KFold
+from sklearn.tree import DecisionTreeClassifier
 
 #import the necessary libraries
 
@@ -154,5 +158,86 @@ def R_squared(y_1_test, pred_y1):
 
 print(R_squared(y_1_test, pred_y1))
 
+
 #CROSS VALIDATION FOR MODEL SELECTION TIME!!!
+#we would also generate a random sample, but this time we would do it together with make_classification
+
+
+X,Y = make_classification(n_samples = 2000, n_features = 10, n_classes=4, n_informative = 3, random_state=10, shuffle= True)
+
+#split into training and test set
+
+X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size= 0.2, random_state= 10, shuffle= True)
+
+#for cross validation we would use KFOLD, so import this model
+#instantiate the model with 10 folds or splits and a random state of 63
+
+model2 = KFold(n_splits= 10, random_state= 63, shuffle= True)
+
+# we are supposed to fit our training data, but hold on...we are CROSS VALIDATING KFOLD with DECISION TREE here!!!
+#import the the decision tree model
+
+#instantiate the model and give it a max depth of 20
+#normal circumstances...this is what we should use
+model3 = DecisionTreeClassifier(max_depth= 20)
+max_depth= 20
+
+#now we have two instantiated models
+#next we are supposed to split into training and testing (this time validating) data
+#BUT: max depth in decision tree...the tree would continue to split until it is pure..it would happen 20 times here
+#for each max depth we want to fit our model and make predictions
+#summary: we would split, fit and predict through each max_depth
+#for 2 items in the split model of X..define new values
+
+#for all in the max depths of a DTC, instantiate the DTC model..then for the two items in the KFmodel, fit DTC and make
+#predictions for #DTC
+
+use_accuracies = [[] for _ in range(max_depth)]
+use_accuracies2 = [[] for _ in range(max_depth)]
+
+for every in range(max_depth):
+    model3 = DecisionTreeClassifier(max_depth= every + 1)
+
+    for X1_train_index, X1_test_index in model2.split(X_train):
+        Xtrain, Xtest = X_train[X1_train_index], X_train[X1_test_index]
+        Ytrain, Ytest = Y_train[X1_train_index], Y_train[X1_test_index]
+
+        model3.fit(Xtrain, Ytrain)  #This is for DTC
+
+        # This is for dtc
+        pred_train = model3.predict(Xtrain)
+        pred_test = model3.predict(Xtest)
+
+        # find accuracy: remember you have to find the cm first
+        def new_accuracy(Ytest, pred_test):
+            cm = confusion_matrix(Ytest, pred_test)
+            acc = np.diag(cm).sum() / cm.sum()
+
+        #We can also use the precision, accuracy metric
+        train_accuracy = accuracy_score(Ytest, pred_test)
+        #if you want to print it outside the for loop, you have to create a list and append
+        #the empty list would be above.. you can place it now
+        use_accuracies[every].append(accuracy_score(Ytest, pred_test))
+        #the [every] is for the accuracies to be in a loop
+
+        #you can do the same for the training set
+        train_accuracy2 = accuracy_score(Ytrain, pred_train)
+        # if you want to print it outside the for loop, you have to create a list and append
+        # the empty list would be above.. you can place it now
+        use_accuracies2[every].append(accuracy_score(Ytrain, pred_train))
+        # the [every] is for the accuracies to be in a loop
+
+
+#when we run the code, it would tell us that the list is out of range (the loop is never ending)
+#hence , we have to edit the list from use_accuracies []
+
+#Calculate the mean and standard deviation for training
+#and validation/testing accuracies for each depth across splits
+use_accuracy_mean = np.mean(use_accuracies, axis=1)
+use_accuracy_std = np.std(use_accuracies, axis=1)
+use_accuracy_std2 = np.std(use_accuracies2, axis=0)
+use_accuracy_mean2 = np.mean(use_accuracies2, axis=0)
+
+
+
 
