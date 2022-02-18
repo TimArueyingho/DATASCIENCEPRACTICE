@@ -80,3 +80,79 @@ my_recall_macro(y_test, pred_y) == recall_score(y_test, pred_y , average = 'macr
 
 
 #Regression
+#We need a dataset, this time we will create one from random numbers
+dataset = np.random.default_rng(10)
+
+#divide into dep (y) and ind (x) variables
+#y = mx + b  .................linear graph
+#we want to find x (x_1) and y (y_1), but we are told the values of the coefficients (m is the gradient and b the intercept)
+
+m = 2
+b = -1
+
+#we would assume the numbers for x_1 are in a range of 1 to 10
+x_1 = np.linspace(0,10,101)
+#print (x_1)
+
+#let us substitute it into the linear equation
+y_1 = m*x_1 + b
+
+#now we know our x and y
+#split your data, import the library
+
+x_1_train, x_1_test, y_1_train, y_1_test = train_test_split(x_1, y_1, test_size= 0.2, random_state= 10)
+
+#here
+x_1_reshape = x_1_train.reshape(-1,1)
+
+#import the classifier
+model_1 = LinearRegression()
+model_1.fit(x_1_reshape, y_1_train)
+
+
+#error: reshape something, let us check
+#reshape x...do it above
+
+gradient = model_1.coef_
+intercept = model_1.intercept_
+
+print(gradient)
+print(intercept)
+
+#Reshape the test data to have one column and
+#then call predict on the regression model to get the predicted y values
+
+x_1_test_reshape = x_1_test.reshape(-1,1)
+pred_y1 = model_1.predict(x_1_test_reshape)
+print(pred_y1)
+
+#calculate the mean squared error
+#the formula is sum of the difference between y and x, all squared, divided by the number of values
+#remember pred_y is based on x
+
+def MSE(y_1_test, pred_y1):
+    difference = (y_1_test - pred_y1) ** 2
+    mse = difference.sum()/len(difference)
+    return mse
+
+print(MSE(y_1_test, pred_y1))
+
+
+#Calculate R squared
+#from the notes: the formula is sum of the difference between y and x, all squared, divided by
+# sum of the difference between y and the mean of y, all squared
+#all of it subtracted from 1
+
+def R_squared(y_1_test, pred_y1):
+    differences = (y_1_test - pred_y1) ** 2
+    sum_differences = differences.sum()
+    differences_down = (y_1_test - np.mean(pred_y1)) ** 2
+    sum_differences_down = differences_down.sum()
+    divide_sum = sum_differences/sum_differences_down
+    rsquare = 1 - divide_sum
+    return rsquare
+
+print(R_squared(y_1_test, pred_y1))
+
+#CROSS VALIDATION FOR MODEL SELECTION TIME!!!
+
