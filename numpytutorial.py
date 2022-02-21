@@ -7,6 +7,7 @@ import random
 a = np.array([1, 2, 3, 4, 5, 6])
 print(a)
 
+
 #2D
 b = np.array([[0., 0., 0.],[1., 1., 1.]])
 print (b.shape)
