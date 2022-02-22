@@ -36,7 +36,9 @@ print (f)
 g = np.linspace(0,10, num=51)
 print (g)
 
-array_example = np.array([[[0, 1, 2, 3],[4, 5, 6, 7]],  [[0, 1, 2, 3],[4, 5, 6, 7]],[[0 ,1 ,2, 3],[4, 5, 6, 7]]])
+array_example = np.array([[[0, 1, 2, 3],[4, 5, 6, 7]],
+                          [[0, 1, 2, 3],[4, 5, 6, 7]],
+                          [[0 ,1 ,2, 3],[4, 5, 6, 7]]])
 
 print (array_example.shape)
 #(dimension, axis 0 and axis 1)
