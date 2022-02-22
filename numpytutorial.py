@@ -100,6 +100,9 @@ print(randInts[-2:])
 
 print (randInts[:,1:])
 
+ax.scatter(x[:,0], x[:,1])
+#:,0 all of axis 0..... :,1....all of axis 1
+
 #we could do some maths on numpy arrays #they must be the same shape
 x = np.array([[53, 74],
               [2, 14]])
