@@ -123,3 +123,75 @@ fig4
 plt.show()
 
 #just one class is showinf with our hidden layers (10,10,10,10)..lets do 10,100,100,100
+#HANDWRITTEN DIGIT RECOGNIZATION
+#The data set contains images of hand-written digits.
+#normally, import data, divide into dep and ind variable, tts, fit/train, predict
+#we have just been fitting/training and predicting
+
+#our data would be load digits, import it
+datas = load_digits()
+
+#define your x, and y,
+Y = datas.target
+X = datas.data
+
+#tts...import
+X_train, X_test, Y_train, Y_test = train_test_split(X,Y, test_size= 0.1, random_state= 42)
+model5 = MLPClassifier(alpha=1,hidden_layer_sizes=(10,10), max_iter=1000)
+model5.fit(X_train, Y_train)
+pred5_y = model5.predict(X_test)
+
+#remember loss function?
+#if prediction =/= to the actual thing, we could calculate for losses
+
+loss_values = model5.loss_curve_
+plt.figure()
+plt.plot(loss_values)
+plt.show()
+
+
+#NOW LET US USE TENSORFLOW
+#Let us load our dataset/import from keras
+
+#The MNIST dataset is a large database of handwritten digits.
+# It commonly used for training various image processing systems
+
+#our MNST CAnnot work without tensorflow..so lets install that
+#install tensorflow and import
+
+#load the dataset
+mnist = tf.keras.datasets.mnist
+
+#in mnist, we split and load, because the data is made up of training and testing sets
+#onvert data from integgers into floating point numbers
+(x9_train, y9_train), (x9_test, y9_test) = mnist.load_data()
+x9_train, x9_test = x9_train / 255.0, x9_test / 255.0
+
+#now we have x,y vars and tts..we should import the model and instantiate it
+#Sequential model: Keras sequential model API is useful to create simple neural network architectures without much hassle
+# .The sequential API allows you to create models layer-by-layer for most problems.
+# It is limited in that it does not allow you to create models that share layers or have multiple inputs or outputs.
+#the system of feeding back to get loss function and make corrections isnt here
+
+#The sequential model for the NN...will have hidden layers
+# Each layer can have different types: Flatten, Dense, Dropout.
+
+model9 = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10)
+])
+
+#with keras, before you start training.. you have to compile the model
+
+#state loss
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+model9.compile(optimizer='adam',
+              loss=loss_fn,
+              metrics=['accuracy'])
+
+model9.fit(x9_train, y9_train, epochs = 5)
+
+#check performance
+model9.evaluate(x9_test,  y9_test, verbose=2)
